@@ -4,7 +4,7 @@ var Labyrinthe3D = function(bc) {
 	
 };
 
-Labyrinthe3D.MODELS = [Cube3D, Disc3D];
+Labyrinthe3D.MODELS = [Cube3D, Disc3D, Walls3D];
 
 Labyrinthe3D.newStepTracer = function(drawer, remoteCommand){
 	var stepTracer = new StepTracer();
