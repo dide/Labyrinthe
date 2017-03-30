@@ -80,7 +80,7 @@ var Walls3D = function(params, scene) {
 		};
 	};
 
-	var entreeMesh, sortieMesh;
+	var entreeMesh, sortieMesh, meshes;
 
 	this.size = function() {
 		return blocs.length * blocs[0].length * blocs[0][0].length;
@@ -119,6 +119,12 @@ var Walls3D = function(params, scene) {
 						}
 					}
 				}
+				
+				for (var i=0;i<meshes.length;i++){
+					scene.remove(meshes[i]);
+				}
+				
+				meshes = undefined;
 			},
 			eraseBloc : function(bloc) {
 				bloc.isDrawn = false;
@@ -231,6 +237,16 @@ var Walls3D = function(params, scene) {
 				entreeMesh.position.y = (pos.y - blocs[0].length / 2) * Walls3D.BLOCK_SIZE;
 				entreeMesh.position.z = (pos.z - blocs[0][0].length / 2) * Walls3D.BLOCK_SIZE;
 				scene.add(entreeMesh);
+				
+				var geometry = new THREE.PlaneGeometry( blocs.length * Walls3D.BLOCK_SIZE, blocs[0][0].length * Walls3D.BLOCK_SIZE);
+				var material = new THREE.MeshBasicMaterial( {color: 0xffff00, side: THREE.DoubleSide} );
+				var plane = new THREE.Mesh( geometry, material );
+				plane.rotation.set(-Math.PI/2, Math.PI/2000, Math.PI); 
+				plane.position.y -= Walls3D.BLOCK_SIZE;
+				
+				scene.add( plane );
+				meshes = [];
+				meshes.push(plane);
 			},
 			drawSortie : function() {
 				var posSortie = getXYZ(entree.sortieLaby);
