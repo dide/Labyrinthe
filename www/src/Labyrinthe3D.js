@@ -57,9 +57,15 @@ Labyrinthe3D.bindToThreeJs = function(scene) {
 			ModeleSelection = model;
 			dimensionsChangeDialog = new ParamsDialog(ModeleSelection.PARAMETERS
 				    , function(){
-				    	remoteCommand.stop(start);
+				    	remoteCommand.stop(function(){
+				    		remoteCommand.play();
+				    		start();
+				    	});
 				    });
-			remoteCommand.stop(start);
+			remoteCommand.stop(function(){
+				remoteCommand.play();
+				start();
+	    	});
 		};
 	};
 	
@@ -85,6 +91,26 @@ Labyrinthe3D.bindToThreeJs = function(scene) {
 		return false;
 	});
 	
+	var nextButton = document.querySelector('.next');
+	nextButton.addEventListener('click', function() {
+		
+		// skip_next
+		event.preventDefault();
+		
+		var i = this.querySelector('i');
+		
+		if (remoteCommand.isStopped()){
+			i.innerHTML = "skip_next";
+			remoteCommand.next();
+			start();
+		} else {
+			remoteCommand.next();
+		}
+		
+		return false;
+		remoteCommand.next();
+    });
+	
 	var downloadButton = document.querySelector('.download');
 	downloadButton.addEventListener('click', function() {
 		Tools3D.exportScene();
@@ -104,7 +130,7 @@ Labyrinthe3D.bindToThreeJs = function(scene) {
     	
     	var drawer = modele3D.getDrawer();
     	
-    	remoteCommand.play();
+    	// remoteCommand.play();
     	stepTracer = Labyrinthe3D.newStepTracer(drawer, remoteCommand);
     	
     	
@@ -117,6 +143,9 @@ Labyrinthe3D.bindToThreeJs = function(scene) {
 			remoteCommand.stop();
 			var i = document.querySelector('.command i');
 			i.innerHTML = "play_arrow";
+			
+			i = document.querySelector('.next i');
+			i.innerHTML = "navigate_next";
 		}).catch(function(error){
 			console.error(error);
 		});

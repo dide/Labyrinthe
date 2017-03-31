@@ -5,6 +5,7 @@ var RemoteCommand = function() {
 	var resolveCommand = undefined;
 	var rejectCommand = undefined;
 	var paused = false;
+	var stepping = false;
 	var stopped = true;
 	var that = this;
 
@@ -13,6 +14,7 @@ var RemoteCommand = function() {
 		rejectCommand = undefined;
 		stopped = true;
 		paused = false;
+		stepping = false;
 	};
 	
 	this.promise = function() {
@@ -24,7 +26,7 @@ var RemoteCommand = function() {
 				if (typeof stopped == 'function') {
 					stopped();
 				}
-			} else if (!paused) {
+			} else if (!paused && !stepping) {
 				resolveCommand = undefined;
 				rejectCommand = undefined;
 				resolve();
@@ -53,12 +55,19 @@ var RemoteCommand = function() {
 	this.play = function() {
 		paused = false;
 		stopped = false;
+		stepping = false;
 
 		if (resolveCommand) {
 			resolveCommand();
+			resolveCommand = undefined;
 		}
 	};
 
+	this.next = function(){
+		this.play();
+		stepping = true;
+	};
+	
 	this.isStopped = function() {
 		return stopped;
 	};

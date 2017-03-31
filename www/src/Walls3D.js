@@ -119,16 +119,17 @@ var Walls3D = function(params, scene) {
 						}
 					}
 				}
-				
-				for (var i=0;i<meshes.length;i++){
+
+				for (var i = 0; i < meshes.length; i++) {
 					scene.remove(meshes[i]);
 				}
-				
+
 				meshes = undefined;
 			},
 			eraseBloc : function(bloc) {
 				bloc.isDrawn = false;
-				
+				bloc.drawnAngles = [];
+
 				if (bloc.meshes) {
 					for (var i = 0; i < bloc.meshes.length; i++) {
 						var mesh = bloc.meshes[i];
@@ -141,7 +142,7 @@ var Walls3D = function(params, scene) {
 				var ouvertures = [];
 				var angles = [];
 				bloc.isDrawn = true;
-				
+
 				var pos = getXYZ(bloc, blocs);
 
 				for (var i = 0; i < bloc.getSorties().length; i++) {
@@ -162,73 +163,137 @@ var Walls3D = function(params, scene) {
 						ouvertures.push(Constants.FRONT);
 					}
 				}
-				
+
 				for (var i = 0; i < bloc.getBlocsConjoints().length; i++) {
-					var sortie = bloc.getBlocsConjoints()[i];
-					
-					if (!sortie.isDrawn)
+					var conjoint = bloc.getBlocsConjoints()[i];
+
+					if (!conjoint.isDrawn)
 						continue;
-					
-					var sortiePos = getXYZ(sortie, blocs);
-					
-					if (sortiePos.x < pos.x) {
+
+					var conjointPos = getXYZ(conjoint, blocs);
+
+					if (conjointPos.x < pos.x) {
 						ouvertures.push(Constants.LEFT);
-					} else if (sortiePos.x > pos.x) {
+					} else if (conjointPos.x > pos.x) {
 						ouvertures.push(Constants.RIGHT);
-					} else if (sortiePos.y < pos.y) {
+					} else if (conjointPos.y < pos.y) {
 						ouvertures.push(Constants.BOTTOM);
-					} else if (sortiePos.y > pos.y) {
+					} else if (conjointPos.y > pos.y) {
 						ouvertures.push(Constants.TOP);
-					} else if (sortiePos.z < pos.z) {
+					} else if (conjointPos.z < pos.z) {
 						ouvertures.push(Constants.BACK);
-					} else if (sortiePos.z > pos.z) {
+					} else if (conjointPos.z > pos.z) {
 						ouvertures.push(Constants.FRONT);
 					}
 				}
 
 				bloc.meshes = [];
 
+				var createLongBoxGeometry = function(side) {
+					switch (side) {
+					case Constants.LEFT:
+					case Constants.RIGHT:
+						return new THREE.BoxGeometry(Walls3D.WALL_THICKNESS, Walls3D.WALL_HEIGHT, Walls3D.BLOCK_SIZE - Walls3D.WALL_THICKNESS);
+
+					case Constants.FRONT:
+					case Constants.BACK:
+						return new THREE.BoxGeometry(Walls3D.BLOCK_SIZE - Walls3D.WALL_THICKNESS, Walls3D.WALL_HEIGHT, Walls3D.WALL_THICKNESS);
+					default:
+						break;
+					}
+				};
+
+				var angleBoxGeometry = new THREE.BoxGeometry(Walls3D.WALL_THICKNESS, Walls3D.WALL_HEIGHT, Walls3D.WALL_THICKNESS);
+
+				var translateBox = function(side, position) {
+					switch (side) {
+					case Constants.LEFT:
+						position.x -= Walls3D.BLOCK_HALF_SIZE;
+						// position.z += Walls3D.WALL_THICKNESS / 2;
+						return;
+					case Constants.RIGHT:
+						position.x += Walls3D.BLOCK_HALF_SIZE;
+						// position.z -= Walls3D.WALL_THICKNESS / 2;
+						return;
+					case Constants.FRONT:
+						position.z += Walls3D.BLOCK_HALF_SIZE;
+						// position.x += Walls3D.WALL_THICKNESS / 2;
+						return;
+					case Constants.BACK:
+						position.z -= Walls3D.BLOCK_HALF_SIZE;
+						// position.x -= Walls3D.WALL_THICKNESS / 2;
+						return;
+					default:
+						break;
+					}
+				};
+
 				var createBox = function(boxGeometry) {
 					var box = new THREE.Mesh(boxGeometry, Walls3D.WALL_MATERIAL);
-					
+
 					// box.receiveShadow = true;
 					// box.castShadow = true;
-					
+
 					box.position.x = (pos.x - (blocs.length - 1) / 2) * Walls3D.BLOCK_SIZE;
 					box.position.y = Walls3D.WALL_HEIGHT / 2;
 					box.position.z = (pos.z - (blocs[0][0].length - 1) / 2) * Walls3D.BLOCK_SIZE;
 					return box;
 				};
 
-				if (ouvertures.indexOf(Constants.LEFT) == -1) {
-					var boxGeometry = new THREE.BoxGeometry( Walls3D.WALL_THICKNESS, Walls3D.WALL_HEIGHT, Walls3D.BLOCK_SIZE + Walls3D.WALL_THICKNESS );
+				for (var i = 0; i < Constants.HORIZONTAL_DIRECTIONS.length; i++) {
+					var direction = Constants.HORIZONTAL_DIRECTIONS[i];
+
+					if (ouvertures.indexOf(direction) >= 0)
+						continue;
+					var boxGeometry = createLongBoxGeometry(direction);
 					var box = createBox(boxGeometry);
-					box.position.x -= Walls3D.BLOCK_HALF_SIZE;
-					scene.add(box);
-					bloc.meshes.push(box);
-				}
-				if (ouvertures.indexOf(Constants.RIGHT) == -1) {
-					var boxGeometry = new THREE.BoxGeometry( Walls3D.WALL_THICKNESS, Walls3D.WALL_HEIGHT, Walls3D.BLOCK_SIZE + Walls3D.WALL_THICKNESS );
-					var box = createBox(boxGeometry);
-					box.position.x += Walls3D.BLOCK_HALF_SIZE;
+					translateBox(direction, box.position);
 					scene.add(box);
 					bloc.meshes.push(box);
 				}
 
-				if (ouvertures.indexOf(Constants.FRONT) == -1) {
-					var boxGeometry = new THREE.BoxGeometry( Walls3D.BLOCK_SIZE + Walls3D.WALL_THICKNESS, Walls3D.WALL_HEIGHT, Walls3D.WALL_THICKNESS);
-					var box = createBox(boxGeometry);
-					box.position.z += Walls3D.BLOCK_HALF_SIZE;
+				if ((pos.x == 0 || !blocs[pos.x - 1][0][pos.z].isDrawn) && (pos.z == 0 || pos.x == 0 || !blocs[pos.x - 1][0][pos.z - 1].isDrawn)
+						&& (pos.z == 0 || !blocs[pos.x][0][pos.z - 1].isDrawn)) {
+					var box = createBox(angleBoxGeometry);
+					translateBox(Constants.BACK, box.position);
+					translateBox(Constants.LEFT, box.position);
 					scene.add(box);
 					bloc.meshes.push(box);
 				}
-				if (ouvertures.indexOf(Constants.BACK) == -1) {
-					var boxGeometry = new THREE.BoxGeometry( Walls3D.BLOCK_SIZE + Walls3D.WALL_THICKNESS, Walls3D.WALL_HEIGHT, Walls3D.WALL_THICKNESS);
-					var box = createBox(boxGeometry);
-					box.position.z -= Walls3D.BLOCK_HALF_SIZE;
+
+				if (pos.x < blocs.length - 1 && blocs[pos.x + 1][0][pos.z].isDrawn || pos.x < blocs.length - 1 && pos.z < blocs[0][0].length - 1
+						&& blocs[pos.x + 1][0][pos.z + 1].isDrawn || pos.z < blocs[0][0].length - 1 && blocs[pos.x][0][pos.z + 1].isDrawn) {
+					// continue;
+				} else {
+					var box = createBox(angleBoxGeometry);
+					translateBox(Constants.FRONT, box.position);
+					translateBox(Constants.RIGHT, box.position);
 					scene.add(box);
 					bloc.meshes.push(box);
 				}
+
+				if (pos.x > 0 && blocs[pos.x - 1][0][pos.z].isDrawn || pos.x > 0 && pos.z < blocs[0][0].length - 1 && blocs[pos.x - 1][0][pos.z + 1].isDrawn
+						|| pos.z < blocs[0][0].length - 1 && blocs[pos.x][0][pos.z + 1].isDrawn) {
+					// continue;
+				} else {
+					var box = createBox(angleBoxGeometry);
+					translateBox(Constants.FRONT, box.position);
+					translateBox(Constants.LEFT, box.position);
+					scene.add(box);
+					bloc.meshes.push(box);
+				}
+
+				if (pos.x < blocs.length - 1 && blocs[pos.x + 1][0][pos.z].isDrawn || pos.x < blocs.length - 1 && pos.z > 0
+						&& blocs[pos.x + 1][0][pos.z - 1].isDrawn || pos.z > 0 && blocs[pos.x][0][pos.z - 1].isDrawn) {
+					// continue;
+				} else {
+					var box = createBox(angleBoxGeometry);
+					translateBox(Constants.BACK, box.position);
+					translateBox(Constants.RIGHT, box.position);
+					scene.add(box);
+					bloc.meshes.push(box);
+				}
+
 			},
 			drawEntree : function() {
 				var pos = getXYZ(entree);
@@ -241,22 +306,23 @@ var Walls3D = function(params, scene) {
 				entreeMesh.position.y = Walls3D.WALL_HEIGHT / 2;
 				entreeMesh.position.z = (pos.z - (blocs[0][0].length - 1) / 2) * Walls3D.BLOCK_SIZE;
 				scene.add(entreeMesh);
-				
-				var geometry = new THREE.PlaneGeometry( blocs.length * Walls3D.BLOCK_SIZE, blocs[0][0].length * Walls3D.BLOCK_SIZE);
-				// var material = new THREE.MeshBasicMaterial( {color: 0xffff00} );
+
+				var geometry = new THREE.PlaneGeometry(blocs.length * Walls3D.BLOCK_SIZE, blocs[0][0].length * Walls3D.BLOCK_SIZE);
+				// var material = new THREE.MeshBasicMaterial( {color: 0xffff00}
+				// );
 				var material = new THREE.MeshPhongMaterial({
-					color: 0x63d477,
-					specular: 0x0,
-					emissive: 0x0
+					color : 0x63d477,
+					specular : 0x0,
+					emissive : 0x0
 				});
-				
-				var plane = new THREE.Mesh( geometry, material );
+
+				var plane = new THREE.Mesh(geometry, material);
 				// plane.receiveShadow = true;
 				plane.rotation.x = -Math.PI / 2;
-				//plane.rotation.set(-Math.PI/2, Math.PI/2000, Math.PI); 
+				// plane.rotation.set(-Math.PI/2, Math.PI/2000, Math.PI);
 				// plane.position.y = -Walls3D.BLOCK_HALF_SIZE;
-				
-				scene.add( plane );
+
+				scene.add(plane);
 				meshes = [];
 				meshes.push(plane);
 			},
@@ -312,9 +378,9 @@ Walls3D.genereEntreeSortie = function(blocs) {
 Walls3D.NAME = 'Classique avec des murs';
 
 Walls3D.WALL_MATERIAL = new THREE.MeshPhongMaterial({
-	color: 0xffffff,
-	specular: 0x0,
-	emissive: 0x0
+	color : 0xffffff,
+	specular : 0x0,
+	emissive : 0x0
 });
 Walls3D.BLOCK_HALF_SIZE = 3;
 Walls3D.BLOCK_SIZE = Walls3D.BLOCK_HALF_SIZE * 2;
