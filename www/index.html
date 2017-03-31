@@ -72,9 +72,7 @@
 		</header>
 		<div class="mdl-layout__drawer">
 			<span class="mdl-layout__title">Labyrinthe 3D</span>
-			<nav class="mdl-navigation">
-				
-			</nav>
+			<nav class="mdl-navigation"></nav>
 		</div>
 		<main class="mdl-layout__content">
 
@@ -86,6 +84,9 @@
 				<li class="laby-sub-item mdl-list__item"><a
 					class="mdl-button mdl-js-button mdl-button--fab"><i
 						class="material-icons">chevron_right</i></a></li -->
+				<li class="laby-sub-item mdl-list__item"><a
+					class="mdl-button mdl-js-button mdl-button--fab download"><i
+						class="material-icons">file_download</i></a></li>
 				<li class="laby-sub-item mdl-list__item"><a
 					class="mdl-button mdl-js-button mdl-button--fab settings"><i
 						class="material-icons">settings</i></a></li>
@@ -110,6 +111,17 @@
 	<script
 		src="https://cdnjs.cloudflare.com/ajax/libs/three.js/84/three.min.js"></script>
 	<script src="https://threejs.org/examples/js/controls/OrbitControls.js"></script>
+	<script
+		src="https://threejs.org/examples/js/postprocessing/EffectComposer.js"></script>
+	<script
+		src="https://threejs.org/examples/js/postprocessing/RenderPass.js"></script>
+	<script
+		src="https://threejs.org/examples/js/postprocessing/ShaderPass.js"></script>
+	<script
+		src="https://threejs.org/examples/js/postprocessing/MaskPass.js"></script>
+	<script src="https://threejs.org/examples/js/shaders/SSAOShader.js"></script>
+	<script src="https://threejs.org/examples/js/shaders/CopyShader.js"></script>
+	<script src="https://threejs.org/examples/js/exporters/OBJExporter.js"></script>
 
 	<script src="src/Tools3D.js"></script>
 	<script src="src/Labyrinthe.js"></script>

@@ -190,21 +190,25 @@ var Walls3D = function(params, scene) {
 
 				var createBox = function(boxGeometry) {
 					var box = new THREE.Mesh(boxGeometry, Walls3D.WALL_MATERIAL);
-					box.position.x = (pos.x - blocs.length / 2) * Walls3D.BLOCK_SIZE;
-					box.position.y = (pos.y - blocs[0].length / 2) * Walls3D.BLOCK_SIZE;
-					box.position.z = (pos.z - blocs[0][0].length / 2) * Walls3D.BLOCK_SIZE;
+					
+					box.receiveShadow = true;
+					box.castShadow = true;
+					
+					box.position.x = (pos.x - (blocs.length - 1) / 2) * Walls3D.BLOCK_SIZE;
+					box.position.y = Walls3D.WALL_HEIGHT / 2;
+					box.position.z = (pos.z - (blocs[0][0].length - 1) / 2) * Walls3D.BLOCK_SIZE;
 					return box;
 				};
 
 				if (ouvertures.indexOf(Constants.LEFT) == -1) {
-					var boxGeometry = new THREE.BoxGeometry( Walls3D.WALL_THICKNESS, Walls3D.BLOCK_HALF_SIZE, Walls3D.BLOCK_SIZE + Walls3D.WALL_THICKNESS );
+					var boxGeometry = new THREE.BoxGeometry( Walls3D.WALL_THICKNESS, Walls3D.WALL_HEIGHT, Walls3D.BLOCK_SIZE + Walls3D.WALL_THICKNESS );
 					var box = createBox(boxGeometry);
 					box.position.x -= Walls3D.BLOCK_HALF_SIZE;
 					scene.add(box);
 					bloc.meshes.push(box);
 				}
 				if (ouvertures.indexOf(Constants.RIGHT) == -1) {
-					var boxGeometry = new THREE.BoxGeometry( Walls3D.WALL_THICKNESS, Walls3D.BLOCK_HALF_SIZE, Walls3D.BLOCK_SIZE + Walls3D.WALL_THICKNESS );
+					var boxGeometry = new THREE.BoxGeometry( Walls3D.WALL_THICKNESS, Walls3D.WALL_HEIGHT, Walls3D.BLOCK_SIZE + Walls3D.WALL_THICKNESS );
 					var box = createBox(boxGeometry);
 					box.position.x += Walls3D.BLOCK_HALF_SIZE;
 					scene.add(box);
@@ -212,14 +216,14 @@ var Walls3D = function(params, scene) {
 				}
 
 				if (ouvertures.indexOf(Constants.FRONT) == -1) {
-					var boxGeometry = new THREE.BoxGeometry( Walls3D.BLOCK_SIZE + Walls3D.WALL_THICKNESS, Walls3D.BLOCK_HALF_SIZE, Walls3D.WALL_THICKNESS);
+					var boxGeometry = new THREE.BoxGeometry( Walls3D.BLOCK_SIZE + Walls3D.WALL_THICKNESS, Walls3D.WALL_HEIGHT, Walls3D.WALL_THICKNESS);
 					var box = createBox(boxGeometry);
 					box.position.z += Walls3D.BLOCK_HALF_SIZE;
 					scene.add(box);
 					bloc.meshes.push(box);
 				}
 				if (ouvertures.indexOf(Constants.BACK) == -1) {
-					var boxGeometry = new THREE.BoxGeometry( Walls3D.BLOCK_SIZE + Walls3D.WALL_THICKNESS, Walls3D.BLOCK_HALF_SIZE, Walls3D.WALL_THICKNESS);
+					var boxGeometry = new THREE.BoxGeometry( Walls3D.BLOCK_SIZE + Walls3D.WALL_THICKNESS, Walls3D.WALL_HEIGHT, Walls3D.WALL_THICKNESS);
 					var box = createBox(boxGeometry);
 					box.position.z -= Walls3D.BLOCK_HALF_SIZE;
 					scene.add(box);
@@ -233,16 +237,18 @@ var Walls3D = function(params, scene) {
 					color : 0x00ff00
 				});
 				entreeMesh = new THREE.Mesh(geometry, material);
-				entreeMesh.position.x = (pos.x - blocs.length / 2) * Walls3D.BLOCK_SIZE;
-				entreeMesh.position.y = (pos.y - blocs[0].length / 2) * Walls3D.BLOCK_SIZE;
-				entreeMesh.position.z = (pos.z - blocs[0][0].length / 2) * Walls3D.BLOCK_SIZE;
+				entreeMesh.position.x = (pos.x - (blocs.length - 1) / 2) * Walls3D.BLOCK_SIZE;
+				entreeMesh.position.y = Walls3D.WALL_HEIGHT / 2;
+				entreeMesh.position.z = (pos.z - (blocs[0][0].length - 1) / 2) * Walls3D.BLOCK_SIZE;
 				scene.add(entreeMesh);
 				
 				var geometry = new THREE.PlaneGeometry( blocs.length * Walls3D.BLOCK_SIZE, blocs[0][0].length * Walls3D.BLOCK_SIZE);
 				var material = new THREE.MeshBasicMaterial( {color: 0xffff00, side: THREE.DoubleSide} );
 				var plane = new THREE.Mesh( geometry, material );
-				plane.rotation.set(-Math.PI/2, Math.PI/2000, Math.PI); 
-				plane.position.y -= Walls3D.BLOCK_SIZE;
+				plane.receiveShadow = true;
+				plane.rotation.x = -Math.PI / 2;
+				//plane.rotation.set(-Math.PI/2, Math.PI/2000, Math.PI); 
+				// plane.position.y = -Walls3D.BLOCK_HALF_SIZE;
 				
 				scene.add( plane );
 				meshes = [];
@@ -256,9 +262,9 @@ var Walls3D = function(params, scene) {
 					color : 0xFF0000
 				});
 				sortieMesh = new THREE.Mesh(geometry, material);
-				sortieMesh.position.x = (posSortie.x - blocs.length / 2) * Walls3D.BLOCK_SIZE;
-				sortieMesh.position.y = (posSortie.y - blocs[0].length / 2) * Walls3D.BLOCK_SIZE;
-				sortieMesh.position.z = (posSortie.z - blocs[0][0].length / 2) * Walls3D.BLOCK_SIZE;
+				sortieMesh.position.x = (posSortie.x - (blocs.length - 1) / 2) * Walls3D.BLOCK_SIZE;
+				sortieMesh.position.y = Walls3D.WALL_HEIGHT / 2;
+				sortieMesh.position.z = (posSortie.z - (blocs[0][0].length - 1) / 2) * Walls3D.BLOCK_SIZE;
 				scene.add(sortieMesh);
 			}
 		};
@@ -305,6 +311,7 @@ Walls3D.WALL_MATERIAL = new THREE.MeshStandardMaterial({
 Walls3D.BLOCK_HALF_SIZE = 15;
 Walls3D.BLOCK_SIZE = Walls3D.BLOCK_HALF_SIZE * 2;
 Walls3D.WALL_THICKNESS = 6;
+Walls3D.WALL_HEIGHT = Walls3D.BLOCK_HALF_SIZE;
 
 Walls3D.PARAMETERS = [ {
 	name : 'width',

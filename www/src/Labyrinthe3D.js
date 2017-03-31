@@ -85,6 +85,11 @@ Labyrinthe3D.bindToThreeJs = function(scene) {
 		return false;
 	});
 	
+	var downloadButton = document.querySelector('.download');
+	downloadButton.addEventListener('click', function() {
+		Tools3D.exportScene();
+    });
+	
     var showDialogButton = document.querySelector('.settings');
     showDialogButton.addEventListener('click', function() {
     	dimensionsChangeDialog.show();
