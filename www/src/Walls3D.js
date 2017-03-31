@@ -308,21 +308,21 @@ Walls3D.NAME = 'Classique avec des murs';
 Walls3D.WALL_MATERIAL = new THREE.MeshStandardMaterial({
 	color : 0x0000ff
 });
-Walls3D.BLOCK_HALF_SIZE = 15;
+Walls3D.BLOCK_HALF_SIZE = 3;
 Walls3D.BLOCK_SIZE = Walls3D.BLOCK_HALF_SIZE * 2;
-Walls3D.WALL_THICKNESS = 6;
+Walls3D.WALL_THICKNESS = 1;
 Walls3D.WALL_HEIGHT = Walls3D.BLOCK_HALF_SIZE;
 
 Walls3D.PARAMETERS = [ {
 	name : 'width',
 	libelle : 'Width ? blocks',
 	min : 4,
-	max : 50,
+	max : 40,
 	value : 15
 }, {
 	name : 'length',
 	libelle : 'Length ? blocks',
 	min : 4,
-	max : 50,
-	value : 15
+	max : 40,
+	value : 25
 } ];
