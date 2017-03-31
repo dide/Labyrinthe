@@ -191,8 +191,8 @@ var Walls3D = function(params, scene) {
 				var createBox = function(boxGeometry) {
 					var box = new THREE.Mesh(boxGeometry, Walls3D.WALL_MATERIAL);
 					
-					box.receiveShadow = true;
-					box.castShadow = true;
+					// box.receiveShadow = true;
+					// box.castShadow = true;
 					
 					box.position.x = (pos.x - (blocs.length - 1) / 2) * Walls3D.BLOCK_SIZE;
 					box.position.y = Walls3D.WALL_HEIGHT / 2;
@@ -243,9 +243,15 @@ var Walls3D = function(params, scene) {
 				scene.add(entreeMesh);
 				
 				var geometry = new THREE.PlaneGeometry( blocs.length * Walls3D.BLOCK_SIZE, blocs[0][0].length * Walls3D.BLOCK_SIZE);
-				var material = new THREE.MeshBasicMaterial( {color: 0xffff00, side: THREE.DoubleSide} );
+				// var material = new THREE.MeshBasicMaterial( {color: 0xffff00} );
+				var material = new THREE.MeshPhongMaterial({
+					color: 0x63d477,
+					specular: 0x0,
+					emissive: 0x0
+				});
+				
 				var plane = new THREE.Mesh( geometry, material );
-				plane.receiveShadow = true;
+				// plane.receiveShadow = true;
 				plane.rotation.x = -Math.PI / 2;
 				//plane.rotation.set(-Math.PI/2, Math.PI/2000, Math.PI); 
 				// plane.position.y = -Walls3D.BLOCK_HALF_SIZE;
@@ -305,8 +311,10 @@ Walls3D.genereEntreeSortie = function(blocs) {
 
 Walls3D.NAME = 'Classique avec des murs';
 
-Walls3D.WALL_MATERIAL = new THREE.MeshStandardMaterial({
-	color : 0x0000ff
+Walls3D.WALL_MATERIAL = new THREE.MeshPhongMaterial({
+	color: 0xffffff,
+	specular: 0x0,
+	emissive: 0x0
 });
 Walls3D.BLOCK_HALF_SIZE = 3;
 Walls3D.BLOCK_SIZE = Walls3D.BLOCK_HALF_SIZE * 2;

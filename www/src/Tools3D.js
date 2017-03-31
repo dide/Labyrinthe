@@ -34,14 +34,14 @@ Tools3D.init = function() {
 	// lights
 	light = new THREE.DirectionalLight(0xffffff);
 	light.position.set(-6, 9, -3);
-	light.castShadow = true;
+	// light.castShadow = true;
 	light.lookAt(new THREE.Vector3(0, 0, 0));
 	scene.add(light);
 	light = new THREE.DirectionalLight(0x002288);
 	light.position.set(-1, -1, -1);
 	scene.add(light);
-	light = new THREE.AmbientLight(0x222222);
-	scene.add(light);
+	/* light = new THREE.AmbientLight(0x222222);
+	scene.add(light); */
 
 	initPostprocessing();
 
