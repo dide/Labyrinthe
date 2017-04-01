@@ -117,6 +117,11 @@ var Walls3D = function(params, scene) {
 								var mesh = blocs[i][j][k].meshes[l];
 								scene.remove(mesh);
 							}
+							
+							for (var l = 0; l < blocs[i][j][k].angles.length; l++) {
+								var mesh = blocs[i][j][k].angles[l];
+								scene.remove(mesh);
+							}
 						}
 					}
 				}
@@ -130,10 +135,16 @@ var Walls3D = function(params, scene) {
 			eraseBloc : function(bloc) {
 				bloc.isDrawn = false;
 				bloc.drawnAngles = [];
+				
 
 				if (bloc.meshes) {
 					for (var i = 0; i < bloc.meshes.length; i++) {
 						var mesh = bloc.meshes[i];
+						scene.remove(mesh);
+					}
+					
+					for (var i = 0; i < bloc.angles.length; i++) {
+						var mesh = bloc.angles[i];
 						scene.remove(mesh);
 					}
 				}
@@ -189,6 +200,7 @@ var Walls3D = function(params, scene) {
 				}
 
 				bloc.meshes = [];
+				bloc.angles = [];
 
 				var createLongBoxGeometry = function(side) {
 					switch (side) {
@@ -263,8 +275,7 @@ var Walls3D = function(params, scene) {
 						var isBloc2HasAngle = pos.x > 0 && pos.z > 0 &&
 							blocs[pos.x - 1][0][pos.z - 1].drawnAngles.indexOf(Constants.FRONT ) >= 0;
 						
-							// TODO mettre le contraire
-						return !isBloc1HasAngle && !isBloc2HasAngle && !isBloc3HasAngle;
+						return isBloc1HasAngle || isBloc2HasAngle || isBloc3HasAngle;
 					case Constants.FRONT:
 						var isBloc1HasAngle = pos.x < blocs.length - 1 &&
 							blocs[pos.x + 1][0][pos.z    ].drawnAngles.indexOf(Constants.LEFT) >= 0;
@@ -273,7 +284,7 @@ var Walls3D = function(params, scene) {
 						var isBloc2HasAngle = pos.x < blocs.length - 1 && pos.z < blocs[0][0].length - 1 &&
 							blocs[pos.x + 1][0][pos.z + 1].drawnAngles.indexOf(Constants.BACK ) >= 0;
 						
-						return !isBloc1HasAngle && !isBloc2HasAngle && !isBloc3HasAngle;
+						return isBloc1HasAngle || isBloc2HasAngle || isBloc3HasAngle;
 					case Constants.LEFT:
 						var isBloc1HasAngle = pos.x > 0 &&
 							blocs[pos.x - 1][0][pos.z    ].drawnAngles.indexOf(Constants.FRONT) >= 0;
@@ -282,7 +293,7 @@ var Walls3D = function(params, scene) {
 						var isBloc2HasAngle = pos.x > 0 && pos.z < blocs[0][0].length - 1 &&
 							blocs[pos.x - 1][0][pos.z + 1].drawnAngles.indexOf(Constants.RIGHT ) >= 0;
 						
-						return !isBloc1HasAngle && !isBloc2HasAngle && !isBloc3HasAngle;
+						return isBloc1HasAngle || isBloc2HasAngle || isBloc3HasAngle;
 					case Constants.RIGHT:
 						var isBloc1HasAngle = pos.x < blocs.length - 1 &&
 							blocs[pos.x + 1][0][pos.z    ].drawnAngles.indexOf(Constants.BACK) >= 0;
@@ -291,7 +302,7 @@ var Walls3D = function(params, scene) {
 						var isBloc2HasAngle = pos.x < blocs.length - 1 && pos.z > 0 &&
 							blocs[pos.x + 1][0][pos.z - 1].drawnAngles.indexOf(Constants.LEFT ) >= 0;
 						
-						return !isBloc1HasAngle && !isBloc2HasAngle && !isBloc3HasAngle;
+						return isBloc1HasAngle || isBloc2HasAngle || isBloc3HasAngle;
 					default:
 						break;
 					}
@@ -330,6 +341,7 @@ var Walls3D = function(params, scene) {
 					var box = createBox(angleBoxGeometry);
 					translateAngle(direction, box.position);
 					scene.add(box);
+					bloc.angles.push(box);
 				}
 				
 				/* if ((pos.x == 0 || !blocs[pos.x - 1][0][pos.z].isDrawn) && (pos.z == 0 || pos.x == 0 || !blocs[pos.x - 1][0][pos.z - 1].isDrawn)

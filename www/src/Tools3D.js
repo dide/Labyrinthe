@@ -74,13 +74,13 @@ Tools3D.init = function() {
 			minFilter : THREE.LinearFilter,
 			magFilter : THREE.LinearFilter
 		};
-		depthRenderTarget = new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight, pars);
+		Tools3D.depthRenderTarget = new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight, pars);
 		// Setup SSAO pass
 		Tools3D.ssaoPass = new THREE.ShaderPass(THREE.SSAOShader);
 		var ssaoPass = Tools3D.ssaoPass;
 		ssaoPass.renderToScreen = true;
 		// ssaoPass.uniforms[ "tDiffuse" ].value will be set by ShaderPass
-		ssaoPass.uniforms["tDepth"].value = depthRenderTarget.texture;
+		ssaoPass.uniforms["tDepth"].value = Tools3D.depthRenderTarget.texture;
 		ssaoPass.uniforms['size'].value.set(window.innerWidth, window.innerHeight);
 		ssaoPass.uniforms['cameraNear'].value = camera.near;
 		ssaoPass.uniforms['cameraFar'].value = camera.far;
@@ -110,7 +110,7 @@ Tools3D.render = function() {
 	if (Tools3D.postprocessing.enabled) {
 		// Render depth into depthRenderTarget
 		Tools3D.scene.overrideMaterial = Tools3D.depthMaterial;
-		Tools3D.renderer.render(Tools3D.scene, Tools3D.camera, depthRenderTarget, true);
+		Tools3D.renderer.render(Tools3D.scene, Tools3D.camera, Tools3D.depthRenderTarget, true);
 		// Render renderPass and SSAO shaderPass
 		Tools3D.scene.overrideMaterial = null;
 		Tools3D.effectComposer.render();

@@ -169,7 +169,5 @@ Bloc.prototype.fillPath = function(buffer, stepTracer) {
 		});
 	}
 
-	return new Promise(function(resolve, reject){
-		resolve();
-	});
+	return stepTracer.next(that);
 };

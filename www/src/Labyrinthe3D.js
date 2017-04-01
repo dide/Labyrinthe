@@ -123,8 +123,16 @@ Labyrinthe3D.bindToThreeJs = function(scene) {
     
     var modele3D;
     var start = function(){
-    	if (modele3D)
-    		modele3D.getDrawer().clearScene();
+    	/* if (modele3D)
+    		modele3D.getDrawer().clearScene(); */
+    	
+    	for (var i=scene.children.length - 1;i >= 0;i--){
+    		var mesh = scene.children[i];
+    		
+    		if (mesh instanceof THREE.Light)
+    			continue;
+    		scene.remove(mesh);
+    	}
     	
     	modele3D = new ModeleSelection(dimensionsChangeDialog.getParams(), scene);
     	
