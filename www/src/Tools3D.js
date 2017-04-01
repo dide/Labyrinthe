@@ -129,11 +129,17 @@ Tools3D.exportScene = function() {
 				type : mimeType
 			}), fileName);
 		} else if ('download' in a) { // html5 A[download]
-			a.href = 'data:' + mimeType + ',' + encodeURIComponent(content);
+			/* a.href = 'data:' + mimeType + ',' + encodeURIComponent(content);
 			a.setAttribute('download', fileName);
 			document.body.appendChild(a);
 			a.click();
-			document.body.removeChild(a);
+			document.body.removeChild(a); */
+			// var w = window.open('', 'scene.obj');
+			//w.document.body.innerHTML = content;
+			
+			var file = new File([ content ], "scene.obj", {type: mimeType+";charset=utf-8"});
+			saveAs(file);
+			
 			return true;
 		} else { // do iframe dataURL download (old ch+FF):
 			var f = document.createElement('iframe');

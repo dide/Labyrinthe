@@ -138,7 +138,6 @@ Labyrinthe3D.bindToThreeJs = function(scene) {
     	
     	var drawer = modele3D.getDrawer();
     	
-    	// remoteCommand.play();
     	stepTracer = Labyrinthe3D.newStepTracer(drawer, remoteCommand);
     	
     	
