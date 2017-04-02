@@ -16,6 +16,7 @@ var Walls3D = function(params, scene) {
 			for (var k = 0; k < profondeur; k++) {
 				var bloc = new Bloc();
 				bloc.drawnAngles = [];
+				bloc.drawnWalls = [];
 				blocs[i][j].push(bloc);
 
 				bloc.setId(i * largeur * largeur + j * largeur + k);
@@ -93,49 +94,9 @@ var Walls3D = function(params, scene) {
 
 	this.getDrawer = function() {
 		return {
-			clearScene : function() {
-				if (entreeMesh) {
-					scene.remove(entreeMesh);
-				}
-
-				if (sortieMesh) {
-					scene.remove(sortieMesh);
-				}
-
-				if (!blocs)
-					return;
-
-				for (var i = 0; i < blocs.length; i++) {
-					for (var j = 0; j < blocs[0].length; j++) {
-						for (var k = 0; k < blocs[0][0].length; k++) {
-							blocs[i][j][k].removeSorties();
-
-							if (!blocs[i][j][k].meshes)
-								continue;
-
-							for (var l = 0; l < blocs[i][j][k].meshes.length; l++) {
-								var mesh = blocs[i][j][k].meshes[l];
-								scene.remove(mesh);
-							}
-							
-							for (var l = 0; l < blocs[i][j][k].angles.length; l++) {
-								var mesh = blocs[i][j][k].angles[l];
-								scene.remove(mesh);
-							}
-						}
-					}
-				}
-
-				for (var i = 0; i < meshes.length; i++) {
-					scene.remove(meshes[i]);
-				}
-
-				meshes = undefined;
-			},
 			eraseBloc : function(bloc) {
-				bloc.isDrawn = false;
 				bloc.drawnAngles = [];
-				
+				bloc.drawnWalls = [];
 
 				if (bloc.meshes) {
 					for (var i = 0; i < bloc.meshes.length; i++) {
@@ -143,17 +104,15 @@ var Walls3D = function(params, scene) {
 						scene.remove(mesh);
 					}
 					
-					for (var i = 0; i < bloc.angles.length; i++) {
-						var mesh = bloc.angles[i];
-						scene.remove(mesh);
-					}
+					bloc.meshes = [];
 				}
 			},
 
 			drawBloc : function(bloc) {
+				if (bloc.meshes && bloc.meshes.length > 0)
+					return;
+				
 				var ouvertures = [];
-				var angles = [];
-				bloc.isDrawn = true;
 
 				var pos = getXYZ(bloc, blocs);
 
@@ -176,32 +135,31 @@ var Walls3D = function(params, scene) {
 					}
 				}
 
-				for (var i = 0; i < bloc.getBlocsConjoints().length; i++) {
-					var conjoint = bloc.getBlocsConjoints()[i];
-
-					if (!conjoint.isDrawn)
-						continue;
-
-					var conjointPos = getXYZ(conjoint, blocs);
-
-					if (conjointPos.x < pos.x) {
-						ouvertures.push(Constants.LEFT);
-					} else if (conjointPos.x > pos.x) {
-						ouvertures.push(Constants.RIGHT);
-					} else if (conjointPos.y < pos.y) {
-						ouvertures.push(Constants.BOTTOM);
-					} else if (conjointPos.y > pos.y) {
-						ouvertures.push(Constants.TOP);
-					} else if (conjointPos.z < pos.z) {
-						ouvertures.push(Constants.BACK);
-					} else if (conjointPos.z > pos.z) {
-						ouvertures.push(Constants.FRONT);
-					}
-				}
-
 				bloc.meshes = [];
-				bloc.angles = [];
 
+				var isWallDrawn = function(direction){
+					switch (direction) {
+					case Constants.BACK:
+						return pos.z > 0 &&
+						blocs[pos.x    ][0][pos.z - 1].drawnWalls.indexOf(Constants.FRONT ) >= 0;
+							
+					case Constants.FRONT:
+						return pos.z < blocs[0][0].length - 1 &&
+							blocs[pos.x    ][0][pos.z + 1].drawnWalls.indexOf(Constants.BACK ) >= 0;
+
+					case Constants.LEFT:
+						return pos.x > 0 &&
+							blocs[pos.x - 1][0][pos.z    ].drawnWalls.indexOf(Constants.RIGHT) >= 0;
+
+					case Constants.RIGHT:
+						return pos.x < blocs.length - 1 &&
+							blocs[pos.x + 1][0][pos.z    ].drawnWalls.indexOf(Constants.LEFT) >= 0;
+
+					default:
+						break;
+					}
+				};
+				
 				var createLongBoxGeometry = function(side) {
 					switch (side) {
 					case Constants.LEFT:
@@ -243,9 +201,8 @@ var Walls3D = function(params, scene) {
 
 				var createBox = function(boxGeometry) {
 					var box = new THREE.Mesh(boxGeometry, Walls3D.WALL_MATERIAL);
-
-					// box.receiveShadow = true;
-					// box.castShadow = true;
+					bloc.meshes.push(box);
+					scene.add(box);
 
 					box.position.x = (pos.x - (blocs.length - 1) / 2) * Walls3D.BLOCK_SIZE;
 					box.position.y = Walls3D.WALL_HEIGHT / 2;
@@ -256,52 +213,52 @@ var Walls3D = function(params, scene) {
 				for (var i = 0; i < Constants.HORIZONTAL_DIRECTIONS.length; i++) {
 					var direction = Constants.HORIZONTAL_DIRECTIONS[i];
 
-					if (ouvertures.indexOf(direction) >= 0)
+					if (ouvertures.indexOf(direction) >= 0 || isWallDrawn(direction))
 						continue;
 					var boxGeometry = createLongBoxGeometry(direction);
 					var box = createBox(boxGeometry);
 					translateBox(direction, box.position);
-					scene.add(box);
-					bloc.meshes.push(box);
+					
+					bloc.drawnWalls.push(direction);
 				}
 
 				var isAngleDrawn = function(direction){
 					switch (direction) {
 					case Constants.BACK:
-						var isBloc1HasAngle = pos.x > 0 &&
-							blocs[pos.x - 1][0][pos.z    ].drawnAngles.indexOf(Constants.RIGHT) >= 0;
-						var isBloc3HasAngle = pos.z > 0 &&
+						var isBloc1HasAngle = pos.z > 0 &&
 							blocs[pos.x    ][0][pos.z - 1].drawnAngles.indexOf(Constants.LEFT ) >= 0;
 						var isBloc2HasAngle = pos.x > 0 && pos.z > 0 &&
 							blocs[pos.x - 1][0][pos.z - 1].drawnAngles.indexOf(Constants.FRONT ) >= 0;
-						
+						var isBloc3HasAngle = pos.x > 0 &&
+							blocs[pos.x - 1][0][pos.z    ].drawnAngles.indexOf(Constants.RIGHT) >= 0;						
+							
 						return isBloc1HasAngle || isBloc2HasAngle || isBloc3HasAngle;
 					case Constants.FRONT:
-						var isBloc1HasAngle = pos.x < blocs.length - 1 &&
-							blocs[pos.x + 1][0][pos.z    ].drawnAngles.indexOf(Constants.LEFT) >= 0;
-						var isBloc3HasAngle = pos.z < blocs[0][0].length - 1 &&
+						var isBloc1HasAngle = pos.z < blocs[0][0].length - 1 &&
 							blocs[pos.x    ][0][pos.z + 1].drawnAngles.indexOf(Constants.RIGHT ) >= 0;
 						var isBloc2HasAngle = pos.x < blocs.length - 1 && pos.z < blocs[0][0].length - 1 &&
 							blocs[pos.x + 1][0][pos.z + 1].drawnAngles.indexOf(Constants.BACK ) >= 0;
-						
+						var isBloc3HasAngle = pos.x < blocs.length - 1 &&
+							blocs[pos.x + 1][0][pos.z    ].drawnAngles.indexOf(Constants.LEFT) >= 0;						
+							
 						return isBloc1HasAngle || isBloc2HasAngle || isBloc3HasAngle;
 					case Constants.LEFT:
 						var isBloc1HasAngle = pos.x > 0 &&
 							blocs[pos.x - 1][0][pos.z    ].drawnAngles.indexOf(Constants.FRONT) >= 0;
-						var isBloc3HasAngle = pos.z < blocs[0][0].length - 1 &&
-							blocs[pos.x    ][0][pos.z + 1].drawnAngles.indexOf(Constants.BACK ) >= 0;
 						var isBloc2HasAngle = pos.x > 0 && pos.z < blocs[0][0].length - 1 &&
 							blocs[pos.x - 1][0][pos.z + 1].drawnAngles.indexOf(Constants.RIGHT ) >= 0;
-						
+						var isBloc3HasAngle = pos.z < blocs[0][0].length - 1 &&
+							blocs[pos.x    ][0][pos.z + 1].drawnAngles.indexOf(Constants.BACK ) >= 0;
+							
 						return isBloc1HasAngle || isBloc2HasAngle || isBloc3HasAngle;
 					case Constants.RIGHT:
 						var isBloc1HasAngle = pos.x < blocs.length - 1 &&
 							blocs[pos.x + 1][0][pos.z    ].drawnAngles.indexOf(Constants.BACK) >= 0;
-						var isBloc3HasAngle = pos.z > 0 &&
-							blocs[pos.x    ][0][pos.z - 1].drawnAngles.indexOf(Constants.FRONT ) >= 0;
 						var isBloc2HasAngle = pos.x < blocs.length - 1 && pos.z > 0 &&
 							blocs[pos.x + 1][0][pos.z - 1].drawnAngles.indexOf(Constants.LEFT ) >= 0;
-						
+						var isBloc3HasAngle = pos.z > 0 &&
+							blocs[pos.x    ][0][pos.z - 1].drawnAngles.indexOf(Constants.FRONT ) >= 0;
+							
 						return isBloc1HasAngle || isBloc2HasAngle || isBloc3HasAngle;
 					default:
 						break;
@@ -319,12 +276,12 @@ var Walls3D = function(params, scene) {
 						translateBox(Constants.RIGHT, position);
 						return;
 					case Constants.LEFT:
-						translateBox(Constants.FRONT, position);
 						translateBox(Constants.LEFT, position);
+						translateBox(Constants.FRONT, position);
 						return;
 					case Constants.RIGHT:
-						translateBox(Constants.BACK, position);
 						translateBox(Constants.RIGHT, position);
+						translateBox(Constants.BACK, position);
 						return;
 					default:
 						break;
@@ -340,52 +297,7 @@ var Walls3D = function(params, scene) {
 					bloc.drawnAngles.push(direction);
 					var box = createBox(angleBoxGeometry);
 					translateAngle(direction, box.position);
-					scene.add(box);
-					bloc.angles.push(box);
 				}
-				
-				/* if ((pos.x == 0 || !blocs[pos.x - 1][0][pos.z].isDrawn) && (pos.z == 0 || pos.x == 0 || !blocs[pos.x - 1][0][pos.z - 1].isDrawn)
-						&& (pos.z == 0 || !blocs[pos.x][0][pos.z - 1].isDrawn)) {
-					var box = createBox(angleBoxGeometry);
-					translateBox(Constants.BACK, box.position);
-					translateBox(Constants.LEFT, box.position);
-					scene.add(box);
-					bloc.meshes.push(box);
-				}
-
-				if (pos.x < blocs.length - 1 && blocs[pos.x + 1][0][pos.z].isDrawn || pos.x < blocs.length - 1 && pos.z < blocs[0][0].length - 1
-						&& blocs[pos.x + 1][0][pos.z + 1].isDrawn || pos.z < blocs[0][0].length - 1 && blocs[pos.x][0][pos.z + 1].isDrawn) {
-					// continue;
-				} else {
-					var box = createBox(angleBoxGeometry);
-					translateBox(Constants.FRONT, box.position);
-					translateBox(Constants.RIGHT, box.position);
-					scene.add(box);
-					bloc.meshes.push(box);
-				}
-
-				if (pos.x > 0 && blocs[pos.x - 1][0][pos.z].isDrawn || pos.x > 0 && pos.z < blocs[0][0].length - 1 && blocs[pos.x - 1][0][pos.z + 1].isDrawn
-						|| pos.z < blocs[0][0].length - 1 && blocs[pos.x][0][pos.z + 1].isDrawn) {
-					// continue;
-				} else {
-					var box = createBox(angleBoxGeometry);
-					translateBox(Constants.FRONT, box.position);
-					translateBox(Constants.LEFT, box.position);
-					scene.add(box);
-					bloc.meshes.push(box);
-				}
-
-				if (pos.x < blocs.length - 1 && blocs[pos.x + 1][0][pos.z].isDrawn || pos.x < blocs.length - 1 && pos.z > 0
-						&& blocs[pos.x + 1][0][pos.z - 1].isDrawn || pos.z > 0 && blocs[pos.x][0][pos.z - 1].isDrawn) {
-					// continue;
-				} else {
-					var box = createBox(angleBoxGeometry);
-					translateBox(Constants.BACK, box.position);
-					translateBox(Constants.RIGHT, box.position);
-					scene.add(box);
-					bloc.meshes.push(box);
-				} */
-
 			},
 			drawEntree : function() {
 				var pos = getXYZ(entree);
@@ -415,15 +327,13 @@ var Walls3D = function(params, scene) {
 				// plane.position.y = -Walls3D.BLOCK_HALF_SIZE;
 
 				scene.add(plane);
-				meshes = [];
-				meshes.push(plane);
 			},
 			drawSortie : function() {
 				var posSortie = getXYZ(entree.sortieLaby);
 
 				var geometry = new THREE.BoxGeometry(Walls3D.BLOCK_HALF_SIZE, Walls3D.BLOCK_HALF_SIZE, Walls3D.BLOCK_HALF_SIZE);
 				var material = new THREE.MeshBasicMaterial({
-					color : 0xFF0000
+					color : 0xFF0000	
 				});
 				sortieMesh = new THREE.Mesh(geometry, material);
 				sortieMesh.position.x = (posSortie.x - (blocs.length - 1) / 2) * Walls3D.BLOCK_SIZE;
@@ -452,6 +362,7 @@ Walls3D.genereEntreeSortie = function(blocs) {
 	blocs[c.x][c.y][c.z] = new Entree(bloc);
 	blocs[c.x][c.y][c.z].setId(bloc.getId());
 	blocs[c.x][c.y][c.z].drawnAngles = [];
+	blocs[c.x][c.y][c.z].drawnWalls = [];
 
 	var c2;
 
@@ -463,6 +374,7 @@ Walls3D.genereEntreeSortie = function(blocs) {
 	blocs[c2.x][c2.y][c2.z] = new Sortie(bloc);
 	blocs[c2.x][c2.y][c2.z].setId(bloc.getId());
 	blocs[c2.x][c2.y][c2.z].drawnAngles = [];
+	blocs[c2.x][c2.y][c2.z].drawnWalls = [];
 
 	blocs[c.x][c.y][c.z].sortieLaby = blocs[c2.x][c2.y][c2.z];
 

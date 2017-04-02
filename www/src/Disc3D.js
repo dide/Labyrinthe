@@ -125,36 +125,6 @@ var Disc3D = function(params, scene) {
 
 	this.getDrawer = function() {
 		return {
-			clearScene : function() {
-				if (entreeMesh) {
-					scene.remove(entreeMesh);
-				}
-
-				if (sortieMesh) {
-					scene.remove(sortieMesh);
-				}
-
-				if (!discs)
-					return;
-
-				for (var i = 0; i < discs.length; i++) {
-					var disc = discs[i];
-
-					for (var j = 0; j < disc.getBlocs().length; j++) {
-						var bloc = disc.getBlocs()[j].bloc;
-						bloc.removeSorties();
-						bloc.isDrawn = false;
-
-						if (!bloc.meshes)
-							continue;
-
-						for (var k = 0; k < bloc.meshes.length; k++) {
-							var mesh = bloc.meshes[k];
-							scene.remove(mesh);
-						}
-					}
-				}
-			},
 			drawEntree : function() {
 				var pos = getVector3(getEntree());
 				var geometry = new THREE.BoxGeometry(Disc3D.BLOCK_HALF_SIZE, Disc3D.BLOCK_HALF_SIZE, Disc3D.BLOCK_HALF_SIZE);

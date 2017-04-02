@@ -92,34 +92,6 @@ var Cube3D = function(params, scene) {
 
 	this.getDrawer = function() {
 		return {
-			clearScene : function() {
-				if (entreeMesh) {
-					scene.remove(entreeMesh);
-				}
-
-				if (sortieMesh) {
-					scene.remove(sortieMesh);
-				}
-
-				if (!blocs)
-					return;
-
-				for (var i = 0; i < blocs.length; i++) {
-					for (var j = 0; j < blocs[0].length; j++) {
-						for (var k = 0; k < blocs[0][0].length; k++) {
-							blocs[i][j][k].removeSorties();
-
-							if (!blocs[i][j][k].meshes)
-								continue;
-
-							for (var l = 0; l < blocs[i][j][k].meshes.length; l++) {
-								var mesh = blocs[i][j][k].meshes[l];
-								scene.remove(mesh);
-							}
-						}
-					}
-				}
-			},
 			eraseBloc : function(bloc) {
 				if (bloc.meshes) {
 					for (var i = 0; i < bloc.meshes.length; i++) {

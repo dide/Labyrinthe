@@ -84,7 +84,8 @@ Bloc.prototype.trouveSortie = function(entreeDuBloc, path, stepTracer) {
 
 	path.push(that);
 
-	var randomizedConjoints = Labyrinthe.randomizeList(this.getBlocsConjoints(entreeDuBloc, path));
+	var randomizedConjoints = Labyrinthe.randomizeList(this.getBlocsConjoints(
+			entreeDuBloc, path));
 
 	for (var i = randomizedConjoints.length - 1; i >= 0; i--) {
 		if (!randomizedConjoints[i].pathExistsToExit(path)) {
@@ -169,5 +170,7 @@ Bloc.prototype.fillPath = function(buffer, stepTracer) {
 		});
 	}
 
-	return stepTracer.next(that);
+	return stepTracer.backtrack(this).then(function() {
+		return stepTracer.next(that);
+	});
 };
