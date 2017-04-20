@@ -125,7 +125,7 @@ Tools3D.exportScene = function() {
 		saveAs(file);
 		
 		return true;
-	}
+	};
 
 	var exporter = new THREE.OBJExporter();
 	var result = exporter.parse(Tools3D.scene);
