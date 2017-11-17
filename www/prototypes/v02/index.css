@@ -1,0 +1,116 @@
+
+#lockedSpells {
+    position: fixed;
+    left: 35%;
+    width: 30%;
+    bottom: 15%;
+    background-color: rgba(0, 0, 0, 0.25);
+}
+
+#playerspells {
+    position: fixed;
+    left:0;
+    right: 50%;
+    bottom: 0;
+    height: 13%;
+    background-color: lightblue;
+}
+
+#playerqueue {
+    position: fixed;
+    top:0;
+    left: 35%;
+    width: 15%;
+    bottom: 15%;
+    background-color: lightcoral;
+}
+
+#playerhealthbar {
+    position: fixed;
+    height:2%;
+    left: 0;
+    width: 50%;
+    bottom: 13%;
+    background-color: red;
+}
+
+#enemyspells {
+    position: fixed;
+    left:50%;
+    right: 0;
+    bottom: 0;
+    height: 13%;
+    background-color: #89b7c5;
+}
+
+#enemyqueue {
+    position: fixed;
+    top:0;
+    right: 35%;
+    width: 15%;
+    bottom: 15%;
+    background-color: #c16161;
+}
+
+#enemyhealthbar {
+    position: fixed;
+    height:2%;
+    right: 0;
+    width: 50%;
+    bottom: 13%;
+    background-color: #dd0000;
+}
+
+.SpellQueueContainer {
+    position: fixed;
+    width: 8%;
+    background-color: yellow;
+    padding: 1%;
+    margin: 0 3% 0 3%;
+    border-bottom: 0.3em solid red;
+}
+
+.SpellBookContainer {
+    display: inline-block;
+    background-color: yellow;
+    padding: 3%;
+    margin: 3%;
+    cursor: pointer;
+}
+
+.SpellBookContainer:hover {
+    background-color: rgb(202, 202, 0);
+}
+
+.SpellBookContainer:active {
+    background-color: rgb(230, 230, 0);
+}
+
+.playButton {
+    position:fixed;
+    width:10%;
+    left:10%;
+    top:10%;
+    top:10%;
+    background-color:red;
+    padding:2%;
+    cursor: pointer;
+    z-index: 1;
+}
+
+.playButton:hover {
+    background-color:#cc0000;
+}
+
+.playButton:active {
+    background-color:#ee0000;
+}
+
+#messages {
+    position: fixed;
+    top:40%;
+    left:20%;
+    background-color:rgba(0, 0, 0, 0.77);
+    color: white;
+    padding: 4%;
+}

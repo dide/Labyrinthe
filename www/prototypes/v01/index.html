@@ -1,0 +1,163 @@
+<!doctype html>
+<!--
+  Interface combat
+  Copyright 2015 Google Inc. All rights reserved.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      https://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="description"
+	content="A front-end template that helps you build fast, modern mobile web apps.">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+<title>Interface combat</title>
+
+<!-- Add to homescreen for Chrome on Android -->
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="icon" sizes="192x192" href="../images/android-desktop.png">
+
+<!-- Add to homescreen for Safari on iOS -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-title" content="Interface combat">
+<link rel="apple-touch-icon-precomposed"
+	href="../images/ios-desktop.png">
+
+<!-- Tile icon for Win8 (144x144 + tile color) -->
+<meta name="msapplication-TileImage"
+	content="images/touch/ms-touch-icon-144x144-precomposed.png">
+<meta name="msapplication-TileColor" content="#3373DF">
+
+<link rel="shortcut icon" href="../images/favicon.png">
+
+<!-- SEO: If your mobile URL is different from the desktop URL, add a canonical link to the desktop page https://developers.google.com/webmasters/smartphone-sites/feature-phones -->
+<!--
+    <link rel="canonical" href="http://www.example.com/">
+    -->
+
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/dialog-polyfill/0.4.7/dialog-polyfill.css">
+<link rel="stylesheet" href="../interface.css">
+<link rel="stylesheet"
+	href="https://fonts.googleapis.com/css?family=Roboto:regular,bold,italic,thin,light,bolditalic,black,medium&amp;lang=en">
+<link rel="stylesheet"
+	href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<link rel="stylesheet"
+	href="https://code.getmdl.io/1.3.0/material.green-red.min.css" />
+<link rel="stylesheet"
+	href="index.css" />
+<style>
+</style>
+
+</head>
+<body>
+
+
+	<div class="mdl-layout mdl-js-layout">
+		<header class="mdl-layout__header mdl-layout__header--scroll">
+			<img class="mdl-layout-icon"></img>
+			<div class="mdl-layout__header-row">
+				<span class="mdl-layout__title">Interface combat</span>
+			</div>
+		</header>
+		<div class="mdl-layout__drawer">
+			<span class="mdl-layout__title">Interface combat</span>
+			<nav class="mdl-navigation"></nav>
+		</div>
+		<main class="mdl-layout__content">
+
+		<div class="fixed-action-btn">
+			<ul class="mdl-list">
+				<!-- li class="laby-sub-item mdl-list__item"><a
+					class="mdl-button mdl-js-button mdl-button--fab"><i
+						class="material-icons">chevron_left</i></i></a></li>
+				<li class="laby-sub-item mdl-list__item"><a
+					class="mdl-button mdl-js-button mdl-button--fab"><i
+						class="material-icons">chevron_right</i></a></li -->
+				<li class="laby-sub-item mdl-list__item"><a
+					class="mdl-button mdl-js-button mdl-button--fab download"><i
+						class="material-icons">file_download</i></a></li>
+				<li class="laby-sub-item mdl-list__item"><a
+					class="mdl-button mdl-js-button mdl-button--fab settings"><i
+						class="material-icons">settings</i></a></li>
+				<li class="laby-sub-item mdl-list__item"><a
+					class="mdl-button mdl-js-button mdl-button--fab command"><i
+						class="material-icons">pause</i></a></li>
+				<li class="laby-sub-item mdl-list__item"><a
+					class="mdl-button mdl-js-button mdl-button--fab next"><i
+						class="material-icons">navigate_next</i></a></li>
+				<li class="mdl-list__item"><a
+					class="laby-edit mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored ">
+						<i class="large material-icons">mode_edit</i>
+				</a></li>
+			</ul>
+		</div>
+
+		<div id="threedcontainer">
+
+		<div id="playerspells"></div>
+		<div id="enemyspells"></div>
+		<div id="playerqueue"></div>
+		<div id="enemyqueue"></div>
+		<div id="playerhealthbar"></div>
+		<div id="enemyhealthbar"></div>
+		<div id="lockedSpells"></div>
+		<div id="messages"></div>
+		</div>
+		</main>
+	</div>
+
+	<script
+		src="https://cdnjs.cloudflare.com/ajax/libs/dialog-polyfill/0.4.7/dialog-polyfill.js"></script>
+	<script src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+
+	<script
+		src="https://cdnjs.cloudflare.com/ajax/libs/three.js/84/three.min.js"></script>
+	<script src="https://threejs.org/examples/js/controls/OrbitControls.js"></script>
+	<script
+		src="https://threejs.org/examples/js/postprocessing/EffectComposer.js"></script>
+	<script
+		src="https://threejs.org/examples/js/postprocessing/RenderPass.js"></script>
+	<script
+		src="https://threejs.org/examples/js/postprocessing/ShaderPass.js"></script>
+	<script
+		src="https://threejs.org/examples/js/postprocessing/MaskPass.js"></script>
+	<script src="https://threejs.org/examples/js/shaders/SSAOShader.js"></script>
+	<script src="https://threejs.org/examples/js/shaders/CopyShader.js"></script>
+	<script src="https://threejs.org/examples/js/exporters/OBJExporter.js"></script>
+
+	<script src="src/Arme.class.js"></script>
+	<script src="src/Armure.class.js"></script>
+	<script src="src/Combattant.class.js"></script>
+	<script src="src/Elements.class.js"></script>
+	<script src="src/Enemy.class.js"></script>
+	<script src="src/Equipement.class.js"></script>
+	<script src="src/Grimoire.class.js"></script>
+	<script src="src/Inventaire.class.js"></script>
+	<script src="src/Joueur.class.js"></script>
+	<script src="src/Maitrises.class.js"></script>
+	<script src="src/Objet.class.js"></script>
+	<script src="src/Potion.class.js"></script>
+	<script src="src/Spell.class.js"></script>
+	<script src="src/SpellQueue.class.js"></script>
+	<script src="src/SpellBook.class.js"></script>
+	<script src="src/HtmlTools.class.js"></script>
+	<script src="data/spells.data.js"></script>
+
+	<script src="index.js"></script>
+
+</body>
+</html>
