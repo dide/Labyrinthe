@@ -45,5 +45,4 @@ var hideButtons = function() {
 	}
 };
 
-Tools3D.init();
-Tools3D.animate();
+

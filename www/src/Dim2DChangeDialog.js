@@ -1,6 +1,6 @@
 "use strict";
 
-var Dim2DChangeDialog = function(initialWidth, initialHeight, remoteCommand, start) {
+class Dim2DChangeDialog { constructor(initialWidth, initialHeight, remoteCommand, start) {
 	var that = this;
 
 	var width = initialWidth;
@@ -126,4 +126,6 @@ var Dim2DChangeDialog = function(initialWidth, initialHeight, remoteCommand, sta
 
 		that.hide();
 	});
-};
+}};
+
+export { Dim2DChangeDialog };

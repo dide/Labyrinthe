@@ -1,6 +1,6 @@
 "use strict";
 
-var StepTracer = function() {
+class StepTracer { constructor() {
 
 	var backtrackHandlers = [];
 	this.addBacktrackHandler = function(handler) {
@@ -49,4 +49,6 @@ var StepTracer = function() {
 
 		return Promise.all(promises);
 	};
-};
+}};
+
+export { StepTracer };

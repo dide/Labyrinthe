@@ -1,6 +1,6 @@
 "use strict";
 
-var ParamsDialog = function(params, restart) {
+class ParamsDialog { constructor(params, restart) {
 	var that = this;
 
 	var paramsValueBackup = [];
@@ -126,4 +126,6 @@ var ParamsDialog = function(params, restart) {
 
 		that.hide();
 	});
-};
+}};
+
+export { ParamsDialog };

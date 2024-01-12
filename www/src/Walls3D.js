@@ -1,6 +1,11 @@
 "use strict";
+import * as THREE from 'three';
+import { Constants } from './Constants';
+import { Entree } from './Entree';
+import { Sortie } from './Sortie';
+import { Bloc } from './Bloc';
 
-var Walls3D = function(params, scene) {
+class Walls3D { constructor(params, scene) {
 	var largeur = params.width;
 	var hauteur = 1;
 	var profondeur = params.length;
@@ -343,7 +348,7 @@ var Walls3D = function(params, scene) {
 			}
 		};
 	}
-};
+}};
 
 Walls3D.genereEntreeSortie = function(blocs) {
 	var getRandomBorderCoordinate = function() {
@@ -406,3 +411,5 @@ Walls3D.PARAMETERS = [ {
 	max : 40,
 	value : 25
 } ];
+
+export { Walls3D };

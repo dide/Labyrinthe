@@ -1,6 +1,11 @@
 "use strict";
+import * as THREE from 'three';
+import { Bloc } from './Bloc';
+import { Constants } from './Constants';
+import { Entree } from './Entree';
+import { Sortie } from './Sortie';
 
-var Cube3D = function(params, scene) {
+class Cube3D { constructor(params, scene) {
 	var largeur = params.width;
 	var hauteur = params.height;
 	var profondeur = params.depth;
@@ -104,7 +109,7 @@ var Cube3D = function(params, scene) {
 			drawBloc : function(bloc) {
 				var ouvertures = [];
 				var pos = getXYZ(bloc, blocs);
-
+				
 				for (var i = 0; i < bloc.getSorties().length; i++) {
 					var sortie = bloc.getSorties()[i];
 
@@ -135,44 +140,44 @@ var Cube3D = function(params, scene) {
 				};
 
 				if (ouvertures.indexOf(Constants.LEFT) >= 0) {
-					var lineGeometry = new THREE.Geometry();
-					lineGeometry.vertices.push(new THREE.Vector3(-Cube3D.BLOCK_HALF_SIZE, 0, 0), new THREE.Vector3(0, 0, 0));
+					var lineGeometry = new THREE.BufferGeometry();
+					lineGeometry.setFromPoints([new THREE.Vector3(-Cube3D.BLOCK_HALF_SIZE, 0, 0), new THREE.Vector3(0, 0, 0)]);
 					var line = createLine(lineGeometry);
 					scene.add(line);
 					bloc.meshes.push(line);
 				}
 				if (ouvertures.indexOf(Constants.RIGHT) >= 0) {
-					var lineGeometry = new THREE.Geometry();
-					lineGeometry.vertices.push(new THREE.Vector3(0, 0, 0), new THREE.Vector3(Cube3D.BLOCK_HALF_SIZE, 0, 0));
+					var lineGeometry = new THREE.BufferGeometry();
+					lineGeometry.setFromPoints([new THREE.Vector3(0, 0, 0), new THREE.Vector3(Cube3D.BLOCK_HALF_SIZE, 0, 0)]);
 					var line = createLine(lineGeometry);
 					scene.add(line);
 					bloc.meshes.push(line);
 				}
 				if (ouvertures.indexOf(Constants.TOP) >= 0) {
-					var lineGeometry = new THREE.Geometry();
-					lineGeometry.vertices.push(new THREE.Vector3(0, Cube3D.BLOCK_HALF_SIZE, 0), new THREE.Vector3(0, 0, 0));
+					var lineGeometry = new THREE.BufferGeometry();
+					lineGeometry.setFromPoints([new THREE.Vector3(0, Cube3D.BLOCK_HALF_SIZE, 0), new THREE.Vector3(0, 0, 0)]);
 					var line = createLine(lineGeometry);
 					scene.add(line);
 					bloc.meshes.push(line);
 				}
 				if (ouvertures.indexOf(Constants.BOTTOM) >= 0) {
-					var lineGeometry = new THREE.Geometry();
-					lineGeometry.vertices.push(new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, -Cube3D.BLOCK_HALF_SIZE, 0));
+					var lineGeometry = new THREE.BufferGeometry();
+					lineGeometry.setFromPoints([new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, -Cube3D.BLOCK_HALF_SIZE, 0)]);
 					var line = createLine(lineGeometry);
 					scene.add(line);
 					bloc.meshes.push(line);
 				}
 
 				if (ouvertures.indexOf(Constants.FRONT) >= 0) {
-					var lineGeometry = new THREE.Geometry();
-					lineGeometry.vertices.push(new THREE.Vector3(0, 0, Cube3D.BLOCK_HALF_SIZE), new THREE.Vector3(0, 0, 0));
+					var lineGeometry = new THREE.BufferGeometry();
+					lineGeometry.setFromPoints([new THREE.Vector3(0, 0, Cube3D.BLOCK_HALF_SIZE), new THREE.Vector3(0, 0, 0)]);
 					var line = createLine(lineGeometry);
 					scene.add(line);
 					bloc.meshes.push(line);
 				}
 				if (ouvertures.indexOf(Constants.BACK) >= 0) {
-					var lineGeometry = new THREE.Geometry();
-					lineGeometry.vertices.push(new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, 0, -Cube3D.BLOCK_HALF_SIZE));
+					var lineGeometry = new THREE.BufferGeometry();
+					lineGeometry.setFromPoints([new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, 0, -Cube3D.BLOCK_HALF_SIZE)]);
 					var line = createLine(lineGeometry);
 					scene.add(line);
 					bloc.meshes.push(line);
@@ -205,7 +210,7 @@ var Cube3D = function(params, scene) {
 			}
 		};
 	}
-};
+}};
 
 Cube3D.genereEntreeSortie = function(blocs) {
 	var getRandomBorderCoordinate = function() {
@@ -267,3 +272,5 @@ Cube3D.PARAMETERS = [ {
 	max : 15,
 	value : 7
 } ];
+
+export { Cube3D };

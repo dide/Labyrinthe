@@ -1,7 +1,10 @@
 "use strict";
 
-var Entree = function(bc) {
-	Bloc.call(this, bc);
+import { Bloc } from "./Bloc";
+import { Path } from "./Path";
+
+class Entree extends Bloc { constructor(bc) {
+	super(bc);
 
 	this.trouveSortie = function(stepTracer) {
 		return Bloc.prototype.trouveSortie.call(this, undefined, new Path(), stepTracer);
@@ -33,6 +36,8 @@ var Entree = function(bc) {
 		
 		console.log(paths.length);
 	};
-};
+}};
 
-Entree.prototype = Object.create(Bloc.prototype);
+// Entree.prototype = Object.create(Bloc.prototype);
+
+export { Entree };

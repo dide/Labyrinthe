@@ -1,6 +1,6 @@
 "use strict";
 
-var RemoteCommand = function() {
+class RemoteCommand { constructor() {
 
 	var resolveCommand = undefined;
 	var rejectCommand = undefined;
@@ -75,4 +75,6 @@ var RemoteCommand = function() {
 	this.isPlaying = function() {
 		return !paused && !stopped;
 	};
-};
+}};
+
+export { RemoteCommand };

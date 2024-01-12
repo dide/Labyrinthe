@@ -1,7 +1,7 @@
 "use strict";
 
-var Path = function(l) {
-	Array.call(this);
+class Path extends Array { constructor(l) {
+	super();
 
 	if (l) {
 		for (var i = 0; i < l.length; i++) {
@@ -20,6 +20,6 @@ var Path = function(l) {
 		return false;
 	};
 
-};
+}};
 
-Path.prototype = Object.create(Array.prototype);
+export { Path };

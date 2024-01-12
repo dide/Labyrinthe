@@ -1,6 +1,13 @@
-var Tools3D = function() {
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { OBJExporter } from 'three/addons/exporters/OBJExporter.js';
 
-};
+class Tools3D { constructor() {
+
+}};
 
 Tools3D.init = function() {
 	Tools3D.scene = new THREE.Scene();
@@ -21,7 +28,7 @@ Tools3D.init = function() {
 	var camera = Tools3D.camera;
 	camera.position.z = 500;
 
-	Tools3D.controls = new THREE.OrbitControls(camera, renderer.domElement);
+	Tools3D.controls = new OrbitControls(camera, renderer.domElement);
 	var controls = Tools3D.controls;
 	controls.addEventListener('change', Tools3D.render); // remove when using
 	// animation loop
@@ -32,7 +39,7 @@ Tools3D.init = function() {
 	// world
 
 	// lights
-	light = new THREE.DirectionalLight(0xffffff);
+	var light = new THREE.DirectionalLight(0xffffff);
 	light.position.set(-6, 9, -3);
 	// light.castShadow = true;
 	light.lookAt(new THREE.Vector3(0, 0, 0));
@@ -64,7 +71,7 @@ Tools3D.init = function() {
 
 	function initPostprocessing() {
 		// Setup render pass
-		var renderPass = new THREE.RenderPass(scene, camera);
+		var renderPass = new RenderPass(scene, camera);
 		// Setup depth pass
 		Tools3D.depthMaterial = new THREE.MeshDepthMaterial();
 		var depthMaterial = Tools3D.depthMaterial;
@@ -76,19 +83,32 @@ Tools3D.init = function() {
 		};
 		Tools3D.depthRenderTarget = new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight, pars);
 		// Setup SSAO pass
-		Tools3D.ssaoPass = new THREE.ShaderPass(THREE.SSAOShader);
+		let postEffect = {
+			uniforms: {
+				tDepth : { value : Tools3D.depthRenderTarget.texture },
+				cameraNear : { value : camera.near },
+				cameraFar : { value : camera.far },
+				onlyAO : { value : (Tools3D.postprocessing.renderMode == 1) },
+				aoClamp : { value : 0.3 },
+				lumInfluence : { value : 0.5 },
+				size: { value : new THREE.Vector2(window.innerWidth, window.innerHeight)},
+			}
+		}
+		
+		Tools3D.ssaoPass = new ShaderPass(postEffect);
 		var ssaoPass = Tools3D.ssaoPass;
 		ssaoPass.renderToScreen = true;
 		// ssaoPass.uniforms[ "tDiffuse" ].value will be set by ShaderPass
-		ssaoPass.uniforms["tDepth"].value = Tools3D.depthRenderTarget.texture;
-		ssaoPass.uniforms['size'].value.set(window.innerWidth, window.innerHeight);
-		ssaoPass.uniforms['cameraNear'].value = camera.near;
-		ssaoPass.uniforms['cameraFar'].value = camera.far;
-		ssaoPass.uniforms['onlyAO'].value = (Tools3D.postprocessing.renderMode == 1);
-		ssaoPass.uniforms['aoClamp'].value = 0.3;
-		ssaoPass.uniforms['lumInfluence'].value = 0.5;
+		 
+		/* postEffect.uniforms["tDepth"].value = Tools3D.depthRenderTarget.texture;
+		postEffect.uniforms['size'].value.set(window.innerWidth, window.innerHeight);
+		postEffect.uniforms['cameraNear'].value = camera.near;
+		postEffect.uniforms['cameraFar'].value = camera.far;
+		postEffect.uniforms['onlyAO'].value = (Tools3D.postprocessing.renderMode == 1);
+		postEffect.uniforms['aoClamp'].value = 0.3;
+		postEffect.uniforms['lumInfluence'].value = 0.5; */
 		// Add pass to effect composer
-		Tools3D.effectComposer = new THREE.EffectComposer(renderer);
+		Tools3D.effectComposer = new EffectComposer(renderer);
 		var effectComposer = Tools3D.effectComposer;
 		effectComposer.addPass(renderPass);
 		effectComposer.addPass(ssaoPass);
@@ -96,7 +116,7 @@ Tools3D.init = function() {
 };
 
 Tools3D.postprocessing = {
-	enabled : true,
+	enabled : false,
 	renderMode : 0
 };
 
@@ -127,8 +147,10 @@ Tools3D.exportScene = function() {
 		return true;
 	};
 
-	var exporter = new THREE.OBJExporter();
+	var exporter = new OBJExporter();
 	var result = exporter.parse(Tools3D.scene);
 
 	download(result, 'scene.obj', 'text/plain');
 };
+
+export { Tools3D };

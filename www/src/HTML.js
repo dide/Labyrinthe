@@ -1,8 +1,8 @@
 "use strict";
 
-var HTML = function() {
+class HTML { constructor() {
 
-};
+}};
 
 HTML.createDom = function(blocs) {
 	var table = document.createElement('table');
@@ -159,3 +159,5 @@ HTML.bind = function(){
 	
 	changeDimensionHandler();
 };
+
+export { HTML };

@@ -112,20 +112,28 @@
 		src="https://cdnjs.cloudflare.com/ajax/libs/dialog-polyfill/0.4.7/dialog-polyfill.js"></script>
 	<script src="https://code.getmdl.io/1.3.0/material.min.js"></script>
 
+	<!--
 	<script
-		src="https://cdnjs.cloudflare.com/ajax/libs/three.js/84/three.min.js"></script>
-	<script src="https://threejs.org/examples/js/controls/OrbitControls.js"></script>
+		src="https://cdnjs.cloudflare.com/ajax/libs/three.js/84/three.js"></script>
+		
+		<script
+		src="https://cdnjs.cloudflare.com/ajax/libs/three.js/84/three.module.js"></script>
+	-->
+			
+	<script src="https://raw.githubusercontent.com/mrdoob/three.js/master/examples/jsm/controls/OrbitControls.js"></script>
 	<script
-		src="https://threejs.org/examples/js/postprocessing/EffectComposer.js"></script>
+		src="https://raw.githubusercontent.com/mrdoob/three.js/master/examples/jsm/postprocessing/EffectComposer.js"></script>
 	<script
-		src="https://threejs.org/examples/js/postprocessing/RenderPass.js"></script>
+		src="https://raw.githubusercontent.com/mrdoob/three.js/master/examples/jsm/postprocessing/RenderPass.js"></script>
 	<script
-		src="https://threejs.org/examples/js/postprocessing/ShaderPass.js"></script>
+		src="https://raw.githubusercontent.com/mrdoob/three.js/master/examples/jsm/postprocessing/ShaderPass.js"></script>
 	<script
-		src="https://threejs.org/examples/js/postprocessing/MaskPass.js"></script>
-	<script src="https://threejs.org/examples/js/shaders/SSAOShader.js"></script>
-	<script src="https://threejs.org/examples/js/shaders/CopyShader.js"></script>
-	<script src="https://threejs.org/examples/js/exporters/OBJExporter.js"></script>
+		src="https://raw.githubusercontent.com/mrdoob/three.js/master/examples/jsm/postprocessing/MaskPass.js"></script>
+	<script src="https://raw.githubusercontent.com/mrdoob/three.js/master/examples/jsm/shaders/SSAOShader.js"></script>
+	<script src="https://raw.githubusercontent.com/mrdoob/three.js/master/examples/jsm/shaders/CopyShader.js"></script>
+	<script src="https://raw.githubusercontent.com/mrdoob/three.js/master/examples/jsm/exporters/OBJExporter.js"></script>
+
+<!--
 
 	<script src="src/Tools3D.js"></script>
 	<script src="src/Labyrinthe.js"></script>
@@ -141,7 +149,11 @@
 	<script src="src/Walls3D.js"></script>
 
 	<script src="src/Constants.js"></script>
+-->
+
 	<script src="src/interface.js"></script>
-	<script src="src/Labyrinthe3D.js"></script>
+	
+	
+	<script type="module" src="src/Labyrinthe3D.js"></script>
 </body>
 </html>

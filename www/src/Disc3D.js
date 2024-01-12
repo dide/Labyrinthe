@@ -1,6 +1,10 @@
 "use strict";
+import * as THREE from 'three';
+import { Entree } from './Entree';
+import { Bloc } from './Bloc';
+import { Sortie } from './Sortie';
 
-var Disc3D = function(params, scene) {
+class Disc3D { constructor(params, scene) {
 	var nbDiscs = parseInt(params.nbDiscs);
 	var areaUnit = parseInt(params.areaUnit);
 	var radiusUnit = parseInt(params.radiusUnit);
@@ -175,10 +179,10 @@ var Disc3D = function(params, scene) {
 					var sortiePos = getVector3(sortie);
 					var rSortie = getRadiusAndAngle(sortie);
 
-					var lineGeometry = new THREE.Geometry();
+					var lineGeometry = new THREE.BufferGeometry();
 
 					if (rEntree.radius != rSortie.radius) {
-						lineGeometry.vertices.push(pos, sortiePos);
+						lineGeometry.setFromPoints([pos, sortiePos]);
 					} else {
 						var clockWise;
 
@@ -200,7 +204,7 @@ var Disc3D = function(params, scene) {
 						);
 						var points = curve.getSpacedPoints(6);
 						var path = new THREE.Path();
-						lineGeometry = path.createGeometry(points);
+						lineGeometry = new THREE.BufferGeometry().setFromPoints( points);
 					}
 
 					var line = new THREE.Line(lineGeometry, Disc3D.LINE_MATERIAL);
@@ -210,7 +214,7 @@ var Disc3D = function(params, scene) {
 			}
 		};
 	};
-};
+}};
 
 Disc3D.Disc = function() {
 	var blocs = [];
@@ -319,3 +323,5 @@ Disc3D.PARAMETERS = [ {
 	max : 100,
 	value : 20
 } ];
+
+export { Disc3D };

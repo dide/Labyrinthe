@@ -1,6 +1,9 @@
 "use strict";
 
-var Bloc = function(bloc) {
+import { Labyrinthe } from "./Labyrinthe";
+import { Path } from "./Path";
+
+class Bloc { constructor(bloc) {
 	var blocsConjoints = bloc ? bloc.getBlocsConjoints() || [] : [];
 
 	if (bloc) {
@@ -76,7 +79,7 @@ var Bloc = function(bloc) {
 			}
 		}
 	};
-};
+}};
 
 Bloc.prototype.trouveSortie = function(entreeDuBloc, path, stepTracer) {
 	var that = this;
@@ -174,3 +177,5 @@ Bloc.prototype.fillPath = function(buffer, stepTracer) {
 		return stepTracer.next(that);
 	});
 };
+
+export { Bloc };

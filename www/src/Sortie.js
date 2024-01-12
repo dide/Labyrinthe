@@ -1,10 +1,11 @@
 "use strict";
 
-var Sortie = function(bc) {
-	Bloc.call(this, bc);
-};
+import { Bloc } from "./Bloc";
 
-Sortie.prototype = Object.create(Bloc.prototype);
+class Sortie extends Bloc { constructor(bc) {
+	super(bc);
+}};
+
 
 Sortie.prototype.trouveSortie = function(entreeDuBloc, path, stepTracer) {
 	var that = this;
@@ -21,3 +22,5 @@ Sortie.prototype.trouveSortie = function(entreeDuBloc, path, stepTracer) {
 Sortie.prototype.pathExistsToExit = function() {
 	return true;
 };
+
+export { Sortie };

@@ -1,8 +1,10 @@
 "use strict";
 
-var Labyrinthe = function() {
+import { Path } from "./Path";
 
-};
+class Labyrinthe { constructor() {
+
+}};
 
 Labyrinthe.randomizeList = function(l) {
 	var rl = [];
@@ -61,3 +63,5 @@ Labyrinthe.fill = function(path, nbBlocsAuTotal, stepTracer) {
 
 	return loop2();
 };
+
+export { Labyrinthe };

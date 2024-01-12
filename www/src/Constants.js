@@ -1,8 +1,8 @@
 "use strict";
 
-var Constants = function() {
+class Constants { constructor() {
 
-};
+}};
 
 Constants.SIZE = 20;
 
@@ -14,3 +14,5 @@ Constants.FRONT = 4;
 Constants.BACK = 5;
 
 Constants.HORIZONTAL_DIRECTIONS = [ Constants.FRONT, Constants.RIGHT, Constants.BACK, Constants.LEFT ];
+
+export { Constants };

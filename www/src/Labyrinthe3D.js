@@ -1,8 +1,17 @@
 "use strict";
+import * as THREE from 'three';
+import { Cube3D } from './Cube3D';
+import { Disc3D } from './Disc3D';
+import { Walls3D } from './Walls3D';
+import { Tools3D } from './Tools3D';
+import { RemoteCommand } from './RemoteCommand';
+import { ParamsDialog } from './ParamsDialog';
+import { StepTracer } from './StepTracer';
+import { Labyrinthe } from './Labyrinthe';
 
-var Labyrinthe3D = function(bc) {
-	
-};
+class Labyrinthe3D { constructor(bc) {
+
+}};
 
 Labyrinthe3D.MODELS = [Cube3D, Disc3D, Walls3D];
 
@@ -166,4 +175,8 @@ Labyrinthe3D.bindToThreeJs = function(scene) {
     
 };
 
+Tools3D.init();
+Tools3D.animate();
 Labyrinthe3D.bindToThreeJs(Tools3D.scene);
+	
+export { Labyrinthe3D };
